@@ -1,0 +1,244 @@
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f0f2f5;
+  color: #1a1d23;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+/* ===== LAYOUT ===== */
+.page-wrapper {
+  width: 100%;
+  max-width: 480px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid #eaecf0;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1d23;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: #8a92a6;
+  margin-top: 4px;
+}
+
+.card-body {
+  padding: 22px 28px 28px;
+}
+
+/* ===== SEARCH ===== */
+.search-wrapper {
+  margin-bottom: 8px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1a1d23;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input::placeholder {
+  color: #b0b8cc;
+}
+
+.search-input:focus {
+  border-color: #1e3a5f;
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+}
+
+/* ===== HINT ===== */
+.hint-text {
+  font-size: 11px;
+  color: #aab1bf;
+  min-height: 16px;
+  margin-bottom: 10px;
+}
+
+/* ===== RESULTS ===== */
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.alumno-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4px;
+  border-bottom: 1px solid #f2f4f7;
+  animation: fadeIn 0.15s ease;
+}
+
+.alumno-row:last-child {
+  border-bottom: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.alumno-nombre {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1d23;
+}
+
+/* ===== BUTTONS ===== */
+.btn-confirmar {
+  background: #1e3a5f;
+  color: #ffffff;
+  border: none;
+  border-radius: 7px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-confirmar:hover {
+  background: #162d4a;
+}
+
+.btn-confirmar.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid #d0d5dd;
+  color: #344054;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  margin-top: 8px;
+}
+
+.btn-outline:hover {
+  background: #f0f2f5;
+}
+
+/* ===== NO RESULTS ===== */
+.no-results {
+  text-align: center;
+  padding: 28px 16px;
+  color: #aab1bf;
+  font-size: 13px;
+}
+
+/* ===== SUCCESS CARD ===== */
+.success-card {
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: #ecfdf3;
+  border: 2px solid #a9efce;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #027a48;
+  margin: 0 auto 20px;
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+.success-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1d23;
+  margin-bottom: 8px;
+}
+
+.success-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin-bottom: 4px;
+}
+
+.success-detail {
+  font-size: 13px;
+  color: #8a92a6;
+  margin-bottom: 24px;
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: #1a1d23;
+  color: #fff;
+  padding: 11px 22px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 999;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success {
+  background: #027a48;
+}
+
+.toast.error {
+  background: #c0392b;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confirmar Asistencia</title>
+  <link rel="stylesheet" href="confirmar-asistencia.css"/>
+  <script src="confirmar-asistencia.js" defer></script>
+</head>
+<body>
+
+  <div class="page-wrapper">
+    <div class="card" id="form-card">
+
+      <div class="card-header">
+        <h1 class="card-title">Confirmar Asistencia</h1>
+        <p class="card-subtitle" id="info-clase">Clase ID: — · Fecha: —</p>
+      </div>
+
+      <div class="card-body">
+        <div class="search-wrapper">
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="Escribe tu nombre para buscarte..."
+            autocomplete="off"
+          />
+        </div>
+
+        <p class="hint-text" id="hint-text"></p>
+
+        <div class="results-list" id="results-list"></div>
+      </div>
+
+    </div>
+
+    <!-- PANTALLA DE ÉXITO -->
+    <div class="card success-card" id="success-card" style="display:none;">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">¡Asistencia Registrada!</h2>
+      <p class="success-name" id="success-name"></p>
+      <p class="success-detail" id="success-detail"></p>
+      <button class="btn-outline" id="btn-volver">Registrar otro alumno</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</body>
+</html>
