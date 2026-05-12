@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarHorarios();
 
   document.getElementById('btn-cerrar').addEventListener('click', cerrarModal);
-  document.getElementById('btn-generar-qr').addEventListener('click', () => {
-    if (horarioSeleccionado !== null) abrirQR(horarioSeleccionado);
-  });
+  // document.getElementById('btn-generar-qr').addEventListener('click', () => {
+  //   if (horarioSeleccionado !== null) abrirQR(horarioSeleccionado);
+  // });
 
   document.getElementById('modal-overlay').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) cerrarModal();
@@ -44,6 +44,7 @@ function renderTabla(data) {
 
   tbody.innerHTML = data.map((h, i) => {
     const id         = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
+    const catedratico= campo(h, 'catedratico', 'Catedratico', 'maestro', 'Maestro');
     const detalle    = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
     const horaInicio = fmtHora(campo(h, 'hora_inicio', 'Hora_inicio', 'horaInicio'));
     const horaFin    = fmtHora(campo(h, 'hora_fin',    'Hora_fin',    'horaFin'));
@@ -53,7 +54,8 @@ function renderTabla(data) {
     return `
       <tr>
         <td>#${id}</td>
-        <td>${detalle}</td>
+        <td>${catedratico}</td>
+        <!-- <td>${detalle}</td> ---->
         <td>${horaInicio}</td>
         <td>${horaFin}</td>
         <td>${fecha}</td>
@@ -79,7 +81,7 @@ function abrirQR(idx) {
   horarioSeleccionado = idx;
 
   const id         = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
-  const detalle    = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
+  //const detalle    = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
   const fecha      = campo(h, 'fecha', 'Fecha');
   const catedratico = campo(h, 'catedratico', 'Catedratico', 'nombre_catedratico', 'docente');
 
@@ -89,7 +91,8 @@ function abrirQR(idx) {
 
   // Construir URL de confirmación
   const base = window.location.href.replace('asistencia.html', '');
-  const url  = `${base}confirmar-asistencia.html?clase_id=${id}&fecha=${encodeURIComponent(fecha)}&detalle=${encodeURIComponent(detalle)}`;
+  const url  = `${base}confirmar-asistencia.html?clase_id=${id}&fecha=${encodeURIComponent(fecha)}`;
+  //const url  = `${base}confirmar-asistencia.html?clase_id=${id}&fecha=${encodeURIComponent(fecha)}&detalle=${encodeURIComponent(detalle)}`;
 
   // Limpiar y generar QR
   document.getElementById('qrcode').innerHTML = '';

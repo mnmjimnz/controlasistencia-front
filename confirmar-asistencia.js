@@ -1,3 +1,4 @@
+//const API = 'https://localhost:7159';
 const API = 'https://controlasistenciaapi.onrender.com';
 
 // ─── PARAMS DEL QR ────────────────────────────────────────────────────────────
@@ -96,10 +97,9 @@ async function confirmarAsistencia(encoded) {
   });
 
   const payload = {
-    id_horario_h: claseId ? parseInt(claseId) : null,
-    id_alumno: idAlumno,
+    id_horario_d : alumno.id_horariod,
     fecha: fecha || new Date().toISOString().split('T')[0],
-    estado: 'Presente'
+    estado: true
   };
 
   try {
@@ -152,7 +152,7 @@ function getNombre(a) {
   const apellido = campo(a, 'apellido', 'Apellido', 'lastName',   'last_name');
   const n = nombre   !== '—' ? nombre   : '';
   const ap= apellido !== '—' ? apellido : '';
-  return `${n} ${ap}`.trim() || 'Alumno';
+  return `${n} ${ap}`.trim() || 'Sin resultados';
 }
 
 function mostrarToast(msg, tipo = '') {
