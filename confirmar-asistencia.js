@@ -1,5 +1,5 @@
-const API = 'https://localhost:7159';
-//const API = 'https://controlasistenciaapi.onrender.com';
+//const API = 'https://localhost:7159';
+const API = 'https://controlasistenciaapi.onrender.com';
 
 // ─── PARAMS DEL QR ────────────────────────────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
