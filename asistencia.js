@@ -1,4 +1,5 @@
-const API = 'https://controlasistenciaapi.onrender.com';
+//const API = 'https://controlasistenciaapi.onrender.com';
+const API = 'https://localhost:7159';
 
 let horarios = [];
 let horarioSeleccionado = null;
@@ -43,13 +44,13 @@ function renderTabla(data) {
   }
 
   tbody.innerHTML = data.map((h, i) => {
-    const id         = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
-    const catedratico= campo(h, 'catedratico', 'Catedratico', 'maestro', 'Maestro');
-    const detalle    = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
+    const id = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
+    const catedratico = campo(h, 'catedratico', 'Catedratico', 'maestro', 'Maestro');
+    const detalle = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
     const horaInicio = fmtHora(campo(h, 'hora_inicio', 'Hora_inicio', 'horaInicio'));
-    const horaFin    = fmtHora(campo(h, 'hora_fin',    'Hora_fin',    'horaFin'));
-    const fecha      = fmtFecha(campo(h, 'fecha', 'Fecha'));
-    const estado     = campo(h, 'estado', 'Estado', 'activo', 'Activo');
+    const horaFin = fmtHora(campo(h, 'hora_fin', 'Hora_fin', 'horaFin'));
+    const fecha = fmtFecha(campo(h, 'fecha', 'Fecha'));
+    const estado = campo(h, 'estado', 'Estado', 'activo', 'Activo');
 
     return `
       <tr>
@@ -76,13 +77,13 @@ function renderTabla(data) {
 }
 
 // ─── QR MODAL ────────────────────────────────────────────────────────────────
-function abrirQR(idx) {
+async function abrirQR(idx) {
   const h = horarios[idx];
   horarioSeleccionado = idx;
 
-  const id         = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
+  const id = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
   //const detalle    = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
-  const fecha      = campo(h, 'fecha', 'Fecha');
+  const fecha = campo(h, 'fecha', 'Fecha');
   const catedratico = campo(h, 'catedratico', 'Catedratico', 'nombre_catedratico', 'docente');
 
   // Mostrar nombre del catedrático
@@ -91,13 +92,24 @@ function abrirQR(idx) {
 
   // Construir URL de confirmación
   const base = window.location.href.replace('asistencia.html', '');
-  const url  = `${base}confirmar-asistencia.html?clase_id=${id}&fecha=${encodeURIComponent(fecha)}`;
+  const _route = `clase_id=${id}&fecha=${encodeURIComponent(fecha)}`;
+  //const url  = `${base}confirmar-asistencia.html?clase_id=${id}&fecha=${encodeURIComponent(fecha)}`;
   //const url  = `${base}confirmar-asistencia.html?clase_id=${id}&fecha=${encodeURIComponent(fecha)}&detalle=${encodeURIComponent(detalle)}`;
+
+  // Solicitar token al backend
+  let responseToken = await SolicitarToken(id);
+
+  if (!responseToken.ok) {
+    throw new Error('Error al generar QR');
+  }
+
+  let _token = await responseToken.json();
+
 
   // Limpiar y generar QR
   document.getElementById('qrcode').innerHTML = '';
   new QRCode(document.getElementById('qrcode'), {
-    text: url,
+    text: `${base}confirmar-asistencia.html?t=${_token.token}&${_route}`,
     width: 200,
     height: 200,
     colorDark: '#000000',
@@ -139,4 +151,12 @@ function chipEstado(val) {
   if (v === 'inactivo' || v === '0' || v === 'false')
     return `<span class="chip chip-inactivo">Inactivo</span>`;
   return `<span class="chip chip-pendiente">${val || 'Pendiente'}</span>`;
+}
+async function SolicitarToken(params) {
+  const res = await fetch(`${API}/api/Asistencia/generar-token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: params
+  });
+  return res;
 }
