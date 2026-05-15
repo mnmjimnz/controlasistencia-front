@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Aulas - Sistema de Asistencia</title>
+    <link rel="stylesheet" href="css/asistencia.css">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">🏛️ Gestión de Aulas</div>
+                    <div class="card-subtitle">Administra los espacios donde se imparten clases</div>
+                </div>
+                <button id="btnNuevoAula" class="btn-primary">
+                    ➕ Nueva Aula
+                </button>
+            </div>
+
+            <!-- Tabla de aulas -->
+            <div style="overflow-x: auto;">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Código</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="aulasTableBody">
+                        <tr class="loading-row">
+                            <td colspan="3">
+                                <div class="spinner"></div> Cargando aulas...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL para crear/editar aulas -->
+    <div id="modalAula" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-title" id="modalTitle">➕ Nueva Aula</div>
+            <div class="modal-sub" style="margin-bottom: 20px;">Ingresa el código del aula</div>
+
+            <input type="hidden" id="aulaId">
+
+            <div style="text-align: left; margin-bottom: 24px;">
+                <label
+                    style="display: block; font-size: 12px; font-weight: 600; color: #344054; margin-bottom: 6px;">Código
+                    del Aula</label>
+                <input type="text" id="codigoAula" placeholder="Ej: A-101, Lab-01, Salón B"
+                    style="width: 100%; padding: 10px 12px; border: 1.5px solid #d0d5dd; border-radius: 8px; font-size: 13px; font-family: inherit;">
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button id="btnGuardarAula" class="btn-primary">Guardar</button>
+                <button id="btnCancelarModal" class="btn-outline">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL de confirmación para eliminar -->
+    <div id="modalDelete" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-title">🗑️ Eliminar Aula</div>
+            <div class="modal-sub" style="margin-bottom: 20px;">¿Estás seguro de eliminar esta aula?</div>
+            <div id="deleteInfo"
+                style="background: #f8f9fb; padding: 8px; border-radius: 8px; margin-bottom: 24px; font-size: 13px; font-weight: 500;">
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button id="btnConfirmarDelete" class="btn-primary" style="background: #c0392b;">Confirmar</button>
+                <button id="btnCancelarDelete" class="btn-outline">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="js/aulas.js"></script>
+</body>
+
+</html>

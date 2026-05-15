@@ -60,7 +60,7 @@ function renderTabla(data) {
         <td>${horaInicio}</td>
         <td>${horaFin}</td>
         <td>${fecha}</td>
-        <td>${chipEstado(estado)}</td>
+        <!--- <td>${chipEstado(estado)}</td> --->
         <td>
           <button class="btn-small" onclick="abrirQR(${i})">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
