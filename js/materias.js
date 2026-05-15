@@ -114,29 +114,74 @@ function buscar() {
 }
 
 
+
+
+// document.getElementById('btn-nueva').addEventListener('click', () => openModal('nuevo'));
+// document.getElementById('btn-cancelar').addEventListener('click', closeModal);
+// document.getElementById('btn-guardar').addEventListener('click', guardarMateria);
+// document.getElementById('btn-buscar').addEventListener('click', buscar);
+// document.getElementById('btn-limpiar').addEventListener('click', () => {
+//     document.getElementById('input-buscar').value = '';
+//     renderTabla(materias);
+// });
+// document.getElementById('input-buscar').addEventListener('keydown', e => {
+//     if (e.key === 'Enter') buscar();
+// });
+// document.getElementById('modal-overlay').addEventListener('click', e => {
+//     if (e.target === e.currentTarget) closeModal();
+// });
+// document.getElementById('input-nombre').addEventListener('keydown', e => {
+//     if (e.key === 'Enter') guardarMateria();
+// });
+
+
+// cargarMaterias();
+
+document.getElementById('btn-nueva')
+    .addEventListener('click', () => openModal('nuevo'));
+
+document.getElementById('btn-cancelar')
+    .addEventListener('click', closeModal);
+
+document.getElementById('btn-guardar')
+    .addEventListener('click', guardarMateria);
+
+document.getElementById('btn-buscar')
+    .addEventListener('click', buscar);
+
+document.getElementById('btn-limpiar')
+    .addEventListener('click', () => {
+
+        document.getElementById('input-buscar').value = '';
+        renderTabla(materias);
+
+    });
+
+document.getElementById('input-buscar')
+    .addEventListener('keydown', e => {
+
+        if (e.key === 'Enter') buscar();
+
+    });
+
+document.getElementById('modal-overlay')
+    .addEventListener('click', e => {
+
+        if (e.target === e.currentTarget)
+            closeModal();
+
+    });
+
+document.getElementById('input-nombre')
+    .addEventListener('keydown', e => {
+
+        if (e.key === 'Enter')
+            guardarMateria();
+
+    });
 window.abrirEditar = (id) => {
     const m = materias.find(x => x.id === id);
     if (m) openModal('editar', m);
 };
-
-
-document.getElementById('btn-nueva').addEventListener('click', () => openModal('nuevo'));
-document.getElementById('btn-cancelar').addEventListener('click', closeModal);
-document.getElementById('btn-guardar').addEventListener('click', guardarMateria);
-document.getElementById('btn-buscar').addEventListener('click', buscar);
-document.getElementById('btn-limpiar').addEventListener('click', () => {
-    document.getElementById('input-buscar').value = '';
-    renderTabla(materias);
-});
-document.getElementById('input-buscar').addEventListener('keydown', e => {
-    if (e.key === 'Enter') buscar();
-});
-document.getElementById('modal-overlay').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeModal();
-});
-document.getElementById('input-nombre').addEventListener('keydown', e => {
-    if (e.key === 'Enter') guardarMateria();
-});
-
 
 cargarMaterias();

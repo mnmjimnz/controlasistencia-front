@@ -1,24 +1,108 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro de Asistencia</title>
-  <link rel="stylesheet" href="css/asistencia.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-  <script src="js/asistencia.js" defer></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/asistencia.css">
+  <link rel="stylesheet" href="css/index.css">
 </head>
+
 <body>
 
-  <div class="page-wrapper">
-    <div class="card">
+  <div class="layout">
 
-      <div class="card-header">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="logo">
+        <div class="logo-box">SE</div>
         <div>
-          <h1 class="card-title">Registro de Asistencia</h1>
-          <p class="card-subtitle">Monitoreo de entradas en tiempo real</p>
+          <h2>Sistema</h2>
+          <span>Administrativo</span>
         </div>
-        <!-- <button class="btn-primary" id="btn-generar-qr" disabled>
+      </div>
+      <nav class="menu">
+
+        <!-- <button onclick="cargarVista('dashboard')">
+                    <span>🏠</span>
+                    Dashboard
+                </button> -->
+
+        <button onclick="location.href='aulas.html'">
+          <span>🏫</span>
+          Aulas
+        </button>
+
+        <button onclick="location.href='materias.html'">
+          <span>📚</span>
+          Materias
+        </button>
+
+        <button onclick="location.href='alumnos.html'">
+          <span>👨‍🎓</span>
+          Alumnos
+        </button>
+
+        <button onclick="location.href='horarios.html'">
+          <span>📅</span>
+          Horarios
+        </button>
+
+        <button onclick="location.href='asignar-alumnos.html'">
+          <span>✅</span>
+          Asignar alumnos
+        </button>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="avatar">M</div>
+          <div>
+            <strong>Mario</strong>
+            <span>Administrador</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="overlay" id="overlay" onclick="cerrarSidebar()"></div>
+    <!-- Contenido -->
+    <div class="main-content">
+
+      <!-- Header -->
+      <header class="topbar">
+
+        <button class="menu-toggle" onclick="toggleSidebar()">
+          ☰
+        </button>
+
+        <div>
+          <h1>Sistema Estudiantil</h1>
+          <p>Administración académica</p>
+        </div>
+
+      </header>
+
+
+      <!-- Vista dinámica -->
+      <main id="app">
+        <div class="page-wrapper">
+          <div class="card">
+
+            <div class="card-header">
+              <div>
+                <h1 class="card-title">Registro de Asistencia</h1>
+                <p class="card-subtitle">Monitoreo de entradas en tiempo real</p>
+              </div>
+              <!-- <button class="btn-primary" id="btn-generar-qr" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <rect x="3" y="3" width="7" height="7"/>
             <rect x="14" y="3" width="7" height="7"/>
@@ -27,45 +111,54 @@
           </svg>
           Generar QR de Clase
         </button> -->
-      </div>
+            </div>
 
-      <table class="tabla">
-        <thead>
-          <tr>
-            <th>ID Registro</th>
-            <th>Catedrático</th>
-            <!-- <th>ID Horario Detalle</th> -->
-            <th>Hora Inicio</th>
-            <th>Hora Fin</th>
-            <th>Fecha</th>
-            <!-- <th>Estado</th> -->
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-body">
-          <tr class="loading-row">
-            <td colspan="7">
-              <span class="spinner"></span> Cargando horarios...
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            <table class="tabla">
+              <thead>
+                <tr>
+                  <th>ID Registro</th>
+                  <th>Catedrático</th>
+                  <!-- <th>ID Horario Detalle</th> -->
+                  <th>Hora Inicio</th>
+                  <th>Hora Fin</th>
+                  <th>Fecha</th>
+                  <!-- <th>Estado</th> -->
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-body">
+                <tr class="loading-row">
+                  <td colspan="7">
+                    <span class="spinner"></span> Cargando horarios...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+        <!-- MODAL QR -->
+        <div class="modal-overlay" id="modal-overlay">
+          <div class="modal">
+            <h2 class="modal-title">Escanee para Registrarse</h2>
+            <p class="modal-sub">Asistencia para el Catedrático:</p>
+            <p class="modal-catedratico" id="modal-catedratico">—</p>
+            <div id="qr-container">
+              <div id="qrcode"></div>
+            </div>
+            <button class="btn-outline" id="btn-cerrar">Cerrar Ventana</button>
+          </div>
+        </div>
+      </main>
 
     </div>
-  </div>
 
-  <!-- MODAL QR -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal">
-      <h2 class="modal-title">Escanee para Registrarse</h2>
-      <p class="modal-sub">Asistencia para el Catedrático:</p>
-      <p class="modal-catedratico" id="modal-catedratico">—</p>
-      <div id="qr-container">
-        <div id="qrcode"></div>
-      </div>
-      <button class="btn-outline" id="btn-cerrar">Cerrar Ventana</button>
-    </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="js/asistencia.js" defer></script>
+  <script type="module" src="js/router.js"></script>
 
 </body>
+
 </html>

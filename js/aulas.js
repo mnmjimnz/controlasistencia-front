@@ -1,81 +1,88 @@
 // ============================================
 // CONFIGURACIÓN DE LA API
 // ============================================
-const API_BASE_URL = 'https://controlasistenciaapi.onrender.com';
-const API_AULA = `${API_BASE_URL}/api/Aula`;
-
+const API_AULA = `https://controlasistenciaapi.onrender.com/api/Aula`;
 // ============================================
 // ELEMENTOS DEL DOM
 // ============================================
-const tableBody = document.getElementById('aulasTableBody');
-const btnNuevoAula = document.getElementById('btnNuevoAula');
-const modalAula = document.getElementById('modalAula');
-const modalDelete = document.getElementById('modalDelete');
-const btnGuardarAula = document.getElementById('btnGuardarAula');
-const btnCancelarModal = document.getElementById('btnCancelarModal');
-const btnConfirmarDelete = document.getElementById('btnConfirmarDelete');
-const btnCancelarDelete = document.getElementById('btnCancelarDelete');
-const aulaIdInput = document.getElementById('aulaId');
-const codigoAulaInput = document.getElementById('codigoAula');
-const modalTitle = document.getElementById('modalTitle');
-const deleteInfo = document.getElementById('deleteInfo');
-
+let tableBody = document.getElementById('aulasTableBody');
+let btnNuevoAula = document.getElementById('btnNuevoAula');
+let modalAula = document.getElementById('modalAula');
+let modalDelete = document.getElementById('modalDelete');
+let btnGuardarAula = document.getElementById('btnGuardarAula');
+let btnCancelarModal = document.getElementById('btnCancelarModal');
+let btnConfirmarDelete = document.getElementById('btnConfirmarDelete');
+let btnCancelarDelete = document.getElementById('btnCancelarDelete');
+let aulaIdInput = document.getElementById('aulaId');
+let codigoAulaInput = document.getElementById('codigoAula');
+let modalTitle = document.getElementById('modalTitle');
+let deleteInfo = document.getElementById('deleteInfo');
+let _aulas = [];
 // Estado
 let isEditing = false;
 let pendingDeleteId = null;
 let pendingDeleteCodigo = null;
-
 // ============================================
 // FUNCIONES PRINCIPALES
 // ============================================
 
 // Cargar aulas
+// async function loadAulas() {
+//     let tableBody = document.getElementById('aulasTableBody');
+//     try {
+//         tableBody.innerHTML = `<tr class="loading-row"><td colspan="3"><div class="spinner"></div> Cargando aulas...</td></tr>`;
+
+//         const controller = new AbortController();
+//         const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+//         const response = await fetch(`${API_AULA}/ObtenerAulas`, {
+//             signal: controller.signal
+//         });
+
+//         clearTimeout(timeoutId);
+
+//         if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+//         const data = await response.json();
+//         const aulas = Array.isArray(data) ? data : (data.data || []);
+
+//         renderAulasTable(aulas);
+
+//     } catch (error) {
+//         console.error('Error:', error);
+//         tableBody.innerHTML = `<tr class="loading-row"><td colspan="3">❌ Error al cargar: ${error.message}</td></tr>`;
+//     }
+// }
 async function loadAulas() {
     try {
-        tableBody.innerHTML = `<tr class="loading-row"><td colspan="3"><div class="spinner"></div> Cargando aulas...</td></tr>`;
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
-        
-        const response = await fetch(`${API_AULA}/ObtenerAulas`, {
-            signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
-        const data = await response.json();
-        const aulas = Array.isArray(data) ? data : (data.data || []);
-        
-        renderAulasTable(aulas);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        tableBody.innerHTML = `<tr class="loading-row"><td colspan="3">❌ Error al cargar: ${error.message}</td></tr>`;
+        const res = await fetch(`${API_AULA}/ObtenerAulas`);
+        if (!res.ok) throw new Error('Error al cargar');
+        const data = await res.json();
+        _aulas = Array.isArray(data) ? data : (data.result ?? data.data ?? []);
+        renderAulasTable(_aulas);
+    } catch (e) {
+        document.getElementById('aulasTableBody').innerHTML =
+            `<tr><td colspan="3" class="empty-cell">⚠️ No se pudo conectar con la API.</td></tr>`;
+        mostrarToast('Error al cargar materias', 'error');
     }
 }
 
 // Renderizar tabla
 function renderAulasTable(aulas) {
+    let tableBody = document.getElementById('aulasTableBody');
     if (!aulas || aulas.length === 0) {
         tableBody.innerHTML = `<tr class="loading-row"><td colspan="3">📭 No hay aulas registradas</td></tr>`;
         return;
     }
-    
-    tableBody.innerHTML = '';
-    aulas.forEach(aula => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${escapeHtml(String(aula.id))}</td>
-            <td><strong>${escapeHtml(aula.codigo)}</strong></td>
-            <td>
-                <button class="btn-small" onclick="window.editAula(${aula.id}, '${escapeHtml(aula.codigo)}')">✏️ Editar</button>
-                <!--- <button class="btn-delete" onclick="window.openDeleteModal(${aula.id}, '${escapeHtml(aula.codigo)}')">🗑️ Eliminar</button> --->
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
+    tableBody.innerHTML = aulas.map(m => `
+        <tr>
+          <td class="id-cell">${m.id}</td>
+          <td>${m.codigo}</td>
+          <td>
+            <button class="btn-small" onclick="window.editAula(${m.id}, '${escapeHtml(m.codigo)}')">✏️ Editar</button>
+          </td>
+        </tr>
+      `).join('');
 }
 
 // Guardar aula
@@ -85,7 +92,7 @@ async function saveAula() {
         mostrarToast('El código del aula es obligatorio', 'error');
         return;
     }
-    
+
     try {
         let response;
         if (isEditing) {
@@ -102,13 +109,13 @@ async function saveAula() {
                 body: JSON.stringify({ codigo })
             });
         }
-        
+
         if (!response.ok) throw new Error('Error al guardar');
-        
+
         mostrarToast(isEditing ? 'Aula actualizada' : 'Aula creada', 'success');
         closeModalAula();
         loadAulas();
-        
+
     } catch (error) {
         mostrarToast(`Error: ${error.message}`, 'error');
     }
@@ -117,20 +124,20 @@ async function saveAula() {
 // Eliminar aula
 async function deleteAula() {
     if (!pendingDeleteId) return;
-    
+
     try {
         const response = await fetch(`${API_AULA}/EliminarAula`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: pendingDeleteId })
         });
-        
+
         if (!response.ok) throw new Error('Error al eliminar');
-        
+
         mostrarToast('Aula eliminada', 'success');
         closeModalDelete();
         loadAulas();
-        
+
     } catch (error) {
         mostrarToast(`Error: ${error.message}`, 'error');
     }
@@ -168,9 +175,8 @@ function resetForm() {
     codigoAulaInput.value = '';
     modalTitle.textContent = '➕ Nueva Aula';
 }
-
 // Editar aula (global para onclick)
-window.editAula = function(id, codigo) {
+window.editAula = function (id, codigo) {
     isEditing = true;
     aulaIdInput.value = id;
     codigoAulaInput.value = codigo;
@@ -193,43 +199,36 @@ function escapeHtml(str) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
 }
-
+function mostrarToast(msg, tipo = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${tipo}`;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
 // ============================================
 // EVENTOS
 // ============================================
-
-btnNuevoAula.addEventListener('click', () => {
-    resetForm();
+document.getElementById("btnNuevoAula").addEventListener('click', function () {
     openModalAula();
+    resetForm();
 });
 
-btnGuardarAula.addEventListener('click', saveAula);
-btnCancelarModal.addEventListener('click', closeModalAula);
-btnConfirmarDelete.addEventListener('click', deleteAula);
-btnCancelarDelete.addEventListener('click', closeModalDelete);
+document.getElementById("btnCancelarModal").addEventListener('click', closeModalAula);
+document.getElementById("btnConfirmarDelete").addEventListener('click', deleteAula);
+document.getElementById("btnCancelarDelete").addEventListener('click', closeModalDelete);
 
 // Cerrar modal al hacer clic fuera
-modalAula.addEventListener('click', (e) => {
-    if (e.target === modalAula) closeModalAula();
+document.getElementById("modalAula").addEventListener('click', function () {
+    //if (e.target === document.getElementById("modalAula")) 
+    closeModalAula();
 });
-modalDelete.addEventListener('click', (e) => {
-    if (e.target === modalDelete) closeModalDelete();
-});
-
-// Enter en el input
-codigoAulaInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') saveAula();
+document.getElementById("modalDelete").addEventListener('click', function () {
+    //if (e.target === document.getElementById("modalDelete")) 
+    closeModalDelete();
 });
 
 // Inicializar
-document.addEventListener('DOMContentLoaded', () => {
-    loadAulas();
-});
+loadAulas();
 
-function mostrarToast(msg, tipo = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${tipo}`;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+
