@@ -1,5 +1,7 @@
 /* ===== RESET & BASE ===== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -33,6 +35,29 @@ body {
   justify-content: space-between;
   padding: 24px 28px;
   border-bottom: 1px solid #eaecf0;
+}
+
+@media(max-width:768px) {
+
+  .card-header {
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 16px;
+
+  }
+
+  .card-header .btn-primary {
+
+    width: 100%;
+
+    justify-content: center;
+
+  }
+
 }
 
 .card-title {
@@ -151,7 +176,7 @@ body {
 
 
 /* ===== RESPONSIVE TABLE MOBILE ===== */
-  /* @media (max-width: 768px) {
+/* @media (max-width: 768px) {
 
   .tabla,
   .tabla tbody,
@@ -166,7 +191,7 @@ body {
   }
 
   /* card */
-  /* .tabla tbody tr {
+/* .tabla tbody tr {
     background: #ffffff;
     border: 1px solid #eaecf0;
     border-radius: 16px;
@@ -287,7 +312,7 @@ body {
 
     margin-bottom: 18px;
 
-    box-shadow: 0 4px 14px rgba(0,0,0,.06);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .06);
 
     overflow: hidden;
   }
@@ -343,6 +368,7 @@ body {
     display: inline-flex;
   }
 }
+
 /* ===== ESTADO CHIPS ===== */
 .chip {
   display: inline-block;
@@ -393,7 +419,9 @@ body {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .empty-cell {
@@ -473,58 +501,58 @@ body {
 
 
 .search-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 20px;
-    border-bottom: 1px solid #eaecf0;
-    background: #fafbfc;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eaecf0;
+  background: #fafbfc;
 }
 
 .search-input {
-    flex: 1;
-    border: 1.5px solid #d0d5dd;
-    border-radius: 8px;
-    padding: 9px 14px;
-    font-size: 13px;
-    font-family: inherit;
-    color: #344054;
-    outline: none;
-    transition: border-color 0.2s;
+  flex: 1;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #344054;
+  outline: none;
+  transition: border-color 0.2s;
 }
 
 .search-input:focus {
-    border-color: #1e3a5f;
+  border-color: #1e3a5f;
 }
 
 .form-group {
-    text-align: left;
-    margin-bottom: 16px;
+  text-align: left;
+  margin-bottom: 16px;
 }
 
 .form-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: #344054;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #344054;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .form-input {
-    width: 100%;
-    border: 1.5px solid #d0d5dd;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 13px;
-    font-family: inherit;
-    color: #344054;
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
+  width: 100%;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #344054;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
 .form-input:focus {
-    border-color: #1e3a5f;
+  border-color: #1e3a5f;
 }

@@ -146,23 +146,23 @@ document.getElementById('btn-cancelar')
 document.getElementById('btn-guardar')
     .addEventListener('click', guardarMateria);
 
-document.getElementById('btn-buscar')
-    .addEventListener('click', buscar);
+// document.getElementById('btn-buscar')
+//     .addEventListener('click', buscar);
 
-document.getElementById('btn-limpiar')
-    .addEventListener('click', () => {
+// document.getElementById('btn-limpiar')
+//     .addEventListener('click', () => {
 
-        document.getElementById('input-buscar').value = '';
-        renderTabla(materias);
+//         document.getElementById('input-buscar').value = '';
+//         renderTabla(materias);
 
-    });
+//     });
 
-document.getElementById('input-buscar')
-    .addEventListener('keydown', e => {
+// document.getElementById('input-buscar')
+//     .addEventListener('keydown', e => {
 
-        if (e.key === 'Enter') buscar();
+//         if (e.key === 'Enter') buscar();
 
-    });
+//     });
 
 document.getElementById('modal-overlay')
     .addEventListener('click', e => {
