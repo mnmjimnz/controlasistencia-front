@@ -39,7 +39,7 @@ async function cargarHorarios() {
     //const res = await fetch(`${API}/api/HorarioH/ObtenerHorario_hs`);
     if (!res.ok) throw new Error('Error HTTP ' + res.status);
     horarios = await res.json();
-    renderTabla(horarios);
+    await renderTabla(horarios);
   } catch (err) {
     document.getElementById('tabla-body').innerHTML = `
       <tr><td colspan="7" class="empty-cell">
