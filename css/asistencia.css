@@ -460,6 +460,23 @@ body {
   transform: scale(0.94) translateY(10px);
   transition: transform 0.25s;
 }
+.modal-large {
+    position: relative;
+    /* position: relative; */
+    width: 90%;
+    max-width: 1600px;
+    
+    margin: 20px auto;
+
+    background: #fff;
+    border-radius: 6px;
+    padding: 20px;
+    z-index: 10;
+
+    max-height: calc(105vh - 80px);
+    overflow-y: auto;
+    z-index: 2001;
+}
 
 .modal-overlay.open .modal {
   transform: scale(1) translateY(0);

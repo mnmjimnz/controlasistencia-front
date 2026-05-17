@@ -1,13 +1,15 @@
-async function cargarAsistencia() {
+var _id = 0;
+async function cargarAsistencia(id) {
     try {
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
+        //const params = new URLSearchParams(window.location.search);
+        //const id = params.get('id');
         //const res = await fetch(`https://localhost:7159/api/Registro_asistencia/ObtenerRegistro_asistenciaPorIdHorarioH?id=${id}`);
         const res = await fetch(`https://controlasistenciaapi.onrender.com/api/Registro_asistencia/ObtenerRegistro_asistenciaPorIdHorarioH?id=${id}`);
         if (res.ok) {
             const data = await res.json();
             let asistencia = Array.isArray(data) ? data : (data.result ?? data.data ?? []);
-            renderTabla(asistencia);
+            renderTablaAsistencias(asistencia);
+            _id = id;
         }
         //throw new Error('Error al cargar');
 
@@ -16,9 +18,9 @@ async function cargarAsistencia() {
         console.log(error);
     }
 }
-function renderTabla(data) {
+function renderTablaAsistencias(data) {
 
-    const tbody = document.getElementById('tabla-body');
+    const tbody = document.getElementById('tabla-body-asistencia');
 
     if (!data || data.length === 0) {
 
@@ -89,7 +91,7 @@ async function iniciarSignalR() {
 
                 console.log("Cambios detectados");
 
-                cargarAsistencia();
+                cargarAsistencia(_id);
 
             }
         );
@@ -114,4 +116,4 @@ async function iniciarSignalR() {
 
 iniciarSignalR();
 
-cargarAsistencia();
+//cargarAsistencia();

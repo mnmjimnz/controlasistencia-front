@@ -10,13 +10,21 @@ var PageNumber = 1;
 document.addEventListener('DOMContentLoaded', () => {
   cargarHorarios();
 
-  document.getElementById('btn-cerrar').addEventListener('click', cerrarModal);
+  document.getElementById('btn-cerrar').addEventListener('click', function () {
+    cerrarModal('modal-overlay');
+  });
   // document.getElementById('btn-generar-qr').addEventListener('click', () => {
   //   if (horarioSeleccionado !== null) abrirQR(horarioSeleccionado);
   // });
+  document.getElementById('btn-cerrar-confirmaciones-asistencias').addEventListener('click', function () {
+    cerrarModal('modal-asistencias-confirmadas');
+  });
 
   document.getElementById('modal-overlay').addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) cerrarModal();
+    if (e.target === e.currentTarget) cerrarModal('modal-overlay');
+  });
+  document.getElementById('modal-asistencias-confirmadas').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) cerrarModal('modal-asistencias-confirmadas');
   });
 });
 
@@ -25,7 +33,8 @@ async function cargarHorarios() {
   try {
     let params = new URLSearchParams(window.location.search);
     let idaula = params.get('idaula');
-
+    let aula = await cargarAulaPorId(idaula);
+    document.getElementById("titulo-pantalla").innerText = `Horarios disponibles para el aula: ${aula.codigo}`;
     const res = await fetch(`${API}/api/HorarioH/ObtenerHorarioPorIdAula?idAula=${idaula}&PageSize=${PageSize}&PageNumber=${PageNumber}`);
     //const res = await fetch(`${API}/api/HorarioH/ObtenerHorario_hs`);
     if (!res.ok) throw new Error('Error HTTP ' + res.status);
@@ -39,9 +48,20 @@ async function cargarHorarios() {
     console.error(err);
   }
 }
-
+async function cargarAulaPorId(id) {
+  const res = await fetch(`${API}/api/Aula/ObtenerAulasPorId?id=${id}`);
+  if (!res.ok) throw new Error('Error HTTP ' + res.status);
+  let r = await res.json();
+  return r;
+}
+async function cargarMateriaPorId(id) {
+  const res = await fetch(`${API}/api/Materia/ObtenerMateriasPorId?id=${id}`);
+  if (!res.ok) throw new Error('Error HTTP ' + res.status);
+  let r = await res.json();
+  return r;
+}
 // ─── RENDER TABLE ────────────────────────────────────────────────────────────
-function renderTabla(data) {
+async function renderTabla(data) {
   const tbody = document.getElementById('tabla-body');
 
   if (!data || data.length === 0) {
@@ -58,12 +78,13 @@ function renderTabla(data) {
     const fecha = fmtFecha(campo(h, 'fecha', 'Fecha'));
     const estado = campo(h, 'estado', 'Estado', 'activo', 'Activo');
     const grupo = campo(h, 'grupo');
-
+    let idMateria = campo(h, 'idmateria');
+    let materia = await cargarMateriaPorId(idMateria);
     return `
       <tr>
         <td>#${id}</td>
         <td>${catedratico}</td>
-        <!-- <td>${detalle}</td> ---->
+        <td>${materia.nombre}</td>
         <td>${horaInicio}</td>
         <td>${horaFin}</td>
         <td>${fecha}</td>
@@ -79,7 +100,7 @@ function renderTabla(data) {
             </svg>
             QR
           </button>
-          <button class="btn-primary btn-small" onclick="verHorarios(${id})">Ver asistencias</button>
+          <button class="btn-primary btn-small" onclick="verAsistenciasConfirmadas(${id})">Ver asistencias</button>
         </td>
       </tr>`;
   }).join('');
@@ -88,8 +109,8 @@ function renderTabla(data) {
 }
 
 function changePage(direction) {
-    PageNumber += direction;
-    cargarHorarios();
+  PageNumber += direction;
+  cargarHorarios();
 }
 
 // ─── QR MODAL ────────────────────────────────────────────────────────────────
@@ -107,8 +128,11 @@ async function abrirQR(idx) {
     catedratico && catedratico !== '—' ? catedratico : 'No especificado';
 
   // Construir URL de confirmación
-  const base = window.location.href.replace('asistencia.html', '');
-  const _route = `clase_id=${id}&fecha=${encodeURIComponent(fecha)}`;
+  let params = new URLSearchParams(window.location.search);
+  let idaula = params.get('idaula');
+
+  let base = window.location.href.replace(`asistencia.html?idaula=${idaula}`, '');
+  let _route = `clase_id=${id}&fecha=${encodeURIComponent(fecha)}`;
   //const url  = `${base}confirmar-asistencia.html?clase_id=${id}&fecha=${encodeURIComponent(fecha)}`;
   //const url  = `${base}confirmar-asistencia.html?clase_id=${id}&fecha=${encodeURIComponent(fecha)}&detalle=${encodeURIComponent(detalle)}`;
 
@@ -136,8 +160,9 @@ async function abrirQR(idx) {
   document.getElementById('modal-overlay').classList.add('open');
 }
 
-function cerrarModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
+function cerrarModal(id_modal_btn) {
+  document.getElementById(id_modal_btn).classList.remove('open');
+  //document.getElementById('modal-overlay').classList.remove('open');
 }
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -177,6 +202,8 @@ async function SolicitarToken(params) {
   return res;
 }
 
-function verHorarios(id) {
-  location.href = `confirmaciones-asistencia.html?id=${id}`;
+function verAsistenciasConfirmadas(id) {
+  //location.href = `confirmaciones-asistencia.html?id=${id}`;
+  cargarAsistencia(id);
+  document.getElementById('modal-asistencias-confirmadas').classList.add('open');
 }
