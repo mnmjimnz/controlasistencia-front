@@ -71,6 +71,7 @@ function renderTabla(data) {
             </svg>
             QR
           </button>
+          <button class="btn-primary btn-small" onclick="verHorarios(${id})">Ver asistencias</button>
         </td>
       </tr>`;
   }).join('');
@@ -159,4 +160,8 @@ async function SolicitarToken(params) {
     body: params
   });
   return res;
+}
+
+function verHorarios(id) {
+  location.href = `confirmaciones-asistencia.html?id=${id}`;
 }
