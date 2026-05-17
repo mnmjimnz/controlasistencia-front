@@ -65,48 +65,124 @@ async function renderTabla(data) {
   const tbody = document.getElementById('tabla-body');
 
   if (!data || data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="empty-cell">No hay horarios registrados.</td></tr>`;
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty-cell">
+          No hay horarios registrados.
+        </td>
+      </tr>`;
     return;
   }
 
-  tbody.innerHTML = data.map((h, i) => {
-    const id = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
-    const catedratico = campo(h, 'catedratico', 'Catedratico', 'maestro', 'Maestro');
-    const detalle = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
-    const horaInicio = fmtHora(campo(h, 'hora_inicio', 'Hora_inicio', 'horaInicio'));
-    const horaFin = fmtHora(campo(h, 'hora_fin', 'Hora_fin', 'horaFin'));
-    const fecha = fmtFecha(campo(h, 'fecha', 'Fecha'));
-    const estado = campo(h, 'estado', 'Estado', 'activo', 'Activo');
-    const grupo = campo(h, 'grupo');
-    let idMateria = campo(h, 'idmateria');
-    let materia = await cargarMateriaPorId(idMateria);
-    return `
-      <tr>
-        <td>#${id}</td>
-        <td>${catedratico}</td>
-        <td>${materia.nombre}</td>
-        <td>${horaInicio}</td>
-        <td>${horaFin}</td>
-        <td>${fecha}</td>
-        <td>${grupo}</td>
-        <!--- <td>${chipEstado(estado)}</td> --->
-        <td>
-          <button class="btn-small" onclick="abrirQR(${i})">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <rect x="3" y="3" width="7" height="7"/>
-              <rect x="14" y="3" width="7" height="7"/>
-              <rect x="14" y="14" width="7" height="7"/>
-              <rect x="3" y="14" width="7" height="7"/>
-            </svg>
-            QR
-          </button>
-          <button class="btn-primary btn-small" onclick="verAsistenciasConfirmadas(${id})">Ver asistencias</button>
-        </td>
-      </tr>`;
-  }).join('');
+  const filas = await Promise.all(
+    data.map(async (h, i) => {
+
+      let id = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
+      let catedratico = campo(h, 'catedratico', 'Catedratico', 'maestro', 'Maestro');
+      let detalle = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
+
+      let horaInicio = fmtHora(
+        campo(h, 'hora_inicio', 'Hora_inicio', 'horaInicio')
+      );
+
+      let horaFin = fmtHora(
+        campo(h, 'hora_fin', 'Hora_fin', 'horaFin')
+      );
+
+      let fecha = fmtFecha(
+        campo(h, 'fecha', 'Fecha')
+      );
+
+      let estado = campo(
+        h,
+        'estado',
+        'Estado',
+        'activo',
+        'Activo'
+      );
+
+      let grupo = campo(h, 'grupo');
+
+      let idMateria = campo(h, 'idmateria');
+
+      let materia = await cargarMateriaPorId(idMateria);
+
+      return `
+        <tr>
+          <td>${id}</td>
+          <td>${materia.nombre}</td>
+          <td>${catedratico}</td>
+          <td>${horaInicio}</td>
+          <td>${horaFin}</td>
+          <td>${fecha}</td>
+          <td>${grupo}</td>
+          <td>
+           <button class="btn-small" onclick="abrirQR(${i})">
+             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+               <rect x="3" y="3" width="7" height="7"/>
+               <rect x="14" y="3" width="7" height="7"/>
+               <rect x="14" y="14" width="7" height="7"/>
+               <rect x="3" y="14" width="7" height="7"/>
+             </svg>
+             QR
+           </button>
+           <button class="btn-primary btn-small" onclick="verAsistenciasConfirmadas(${id})">Ver asistencias</button>
+         </td>
+        </tr>
+      `;
+    })
+  );
+
+  tbody.innerHTML = filas.join('');
   document.getElementById('previousPage').disabled = PageNumber === 1;
   document.getElementById('nextPage').disabled = data.length < PageSize;
 }
+// async function renderTabla(data) {
+//   const tbody = document.getElementById('tabla-body');
+
+//   if (!data || data.length === 0) {
+//     tbody.innerHTML = `<tr><td colspan="7" class="empty-cell">No hay horarios registrados.</td></tr>`;
+//     return;
+//   }
+
+//   tbody.innerHTML = data.map((h, i) => {
+//     const id = campo(h, 'id_horario_h', 'Id_horario_h', 'id', 'Id');
+//     const catedratico = campo(h, 'catedratico', 'Catedratico', 'maestro', 'Maestro');
+//     const detalle = campo(h, 'id_horario_d', 'Id_horario_d', 'detalle', 'Detalle');
+//     const horaInicio = fmtHora(campo(h, 'hora_inicio', 'Hora_inicio', 'horaInicio'));
+//     const horaFin = fmtHora(campo(h, 'hora_fin', 'Hora_fin', 'horaFin'));
+//     const fecha = fmtFecha(campo(h, 'fecha', 'Fecha'));
+//     const estado = campo(h, 'estado', 'Estado', 'activo', 'Activo');
+//     const grupo = campo(h, 'grupo');
+//     let idMateria = campo(h, 'idmateria');
+//     let materia = await cargarMateriaPorId(idMateria);
+//     return `
+//       <tr>
+//         <td>#${id}</td>
+//         <td>${catedratico}</td>
+//         <td>${materia.nombre}</td>
+//         <td>${horaInicio}</td>
+//         <td>${horaFin}</td>
+//         <td>${fecha}</td>
+//         <td>${grupo}</td>
+//         <!--- <td>${chipEstado(estado)}</td> --->
+//         <td>
+//           <button class="btn-small" onclick="abrirQR(${i})">
+//             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+//               <rect x="3" y="3" width="7" height="7"/>
+//               <rect x="14" y="3" width="7" height="7"/>
+//               <rect x="14" y="14" width="7" height="7"/>
+//               <rect x="3" y="14" width="7" height="7"/>
+//             </svg>
+//             QR
+//           </button>
+//           <button class="btn-primary btn-small" onclick="verAsistenciasConfirmadas(${id})">Ver asistencias</button>
+//         </td>
+//       </tr>`;
+//   }).join('');
+//   document.getElementById('previousPage').disabled = PageNumber === 1;
+//   document.getElementById('nextPage').disabled = data.length < PageSize;
+// }
 
 function changePage(direction) {
   PageNumber += direction;
