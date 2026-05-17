@@ -78,8 +78,8 @@ function renderTabla(data) {
 async function iniciarSignalR() {
     try {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:7159/asistenciaHub")
-            //.withUrl("https://controlasistenciaapi.onrender.com/asistenciaHub")
+            //.withUrl("https://localhost:7159/asistenciaHub")
+            .withUrl("https://controlasistenciaapi.onrender.com/asistenciaHub")
             .withAutomaticReconnect()
             .build();
 
