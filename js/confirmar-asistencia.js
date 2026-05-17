@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Volver a buscar
-  document.getElementById('btn-volver').addEventListener('click', volverABuscar);
+  //document.getElementById('btn-volver').addEventListener('click', volverABuscar);
 });
 
 // ─── FETCH ALUMNOS ────────────────────────────────────────────────────────────
