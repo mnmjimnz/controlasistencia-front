@@ -3,6 +3,8 @@ const API = 'https://controlasistenciaapi.onrender.com';
 
 let horarios = [];
 let horarioSeleccionado = null;
+const PageSize = 5;
+var PageNumber = 1;
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,7 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ─── FETCH HORARIOS ──────────────────────────────────────────────────────────
 async function cargarHorarios() {
   try {
-    const res = await fetch(`${API}/api/HorarioH/ObtenerHorario_hs`);
+    let params = new URLSearchParams(window.location.search);
+    let idaula = params.get('idaula');
+
+    const res = await fetch(`${API}/api/HorarioH/ObtenerHorarioPorIdAula?idAula=${idaula}&PageSize=${PageSize}&PageNumber=${PageNumber}`);
+    //const res = await fetch(`${API}/api/HorarioH/ObtenerHorario_hs`);
     if (!res.ok) throw new Error('Error HTTP ' + res.status);
     horarios = await res.json();
     renderTabla(horarios);
@@ -51,6 +57,7 @@ function renderTabla(data) {
     const horaFin = fmtHora(campo(h, 'hora_fin', 'Hora_fin', 'horaFin'));
     const fecha = fmtFecha(campo(h, 'fecha', 'Fecha'));
     const estado = campo(h, 'estado', 'Estado', 'activo', 'Activo');
+    const grupo = campo(h, 'grupo');
 
     return `
       <tr>
@@ -60,6 +67,7 @@ function renderTabla(data) {
         <td>${horaInicio}</td>
         <td>${horaFin}</td>
         <td>${fecha}</td>
+        <td>${grupo}</td>
         <!--- <td>${chipEstado(estado)}</td> --->
         <td>
           <button class="btn-small" onclick="abrirQR(${i})">
@@ -75,6 +83,13 @@ function renderTabla(data) {
         </td>
       </tr>`;
   }).join('');
+  document.getElementById('previousPage').disabled = PageNumber === 1;
+  document.getElementById('nextPage').disabled = data.length < PageSize;
+}
+
+function changePage(direction) {
+    PageNumber += direction;
+    cargarHorarios();
 }
 
 // ─── QR MODAL ────────────────────────────────────────────────────────────────

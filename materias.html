@@ -49,10 +49,10 @@
           Alumnos
         </button>
 
-        <button onclick="location.href='asistencia.html'">
+        <!-- <button onclick="location.href='asistencia.html'">
           <span>📅</span>
           Gestionar Asitencia
-        </button>
+        </button> -->
 
         <button onclick="location.href='asignar-alumnos.html'">
           <span>✅</span>
@@ -125,6 +125,11 @@
                   </tr>
                 </tbody>
               </table>
+              <br />
+              <div>
+                <button id="previousPage" class="btn btn-primary" onclick="changePage(-1)">Anterior</button>
+                <button id="nextPage" class="btn btn-primary" onclick="changePage(1)">Siguiente</button>
+              </div>
             </div>
           </div>
         </div>

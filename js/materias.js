@@ -1,7 +1,8 @@
 const API_BASE = 'https://controlasistenciaapi.onrender.com/api/Materia';
 let materias = [];
 let editandoId = null;
-
+const PageSize = 5;
+var PageNumber = 1;
 
 // function showToast(msg, tipo = 'ok') {
 //   const t = document.getElementById('toast');
@@ -51,12 +52,18 @@ function renderTabla(lista) {
           </td>
         </tr>
       `).join('');
+    document.getElementById('previousPage').disabled = PageNumber === 1;
+    document.getElementById('nextPage').disabled = lista.length < PageSize;
 }
 
+function changePage(direction) {
+    PageNumber += direction;
+    cargarMaterias();
+}
 
 async function cargarMaterias() {
     try {
-        const res = await fetch(`${API_BASE}/ObtenerMaterias`);
+        const res = await fetch(`${API_BASE}/ObtenerMaterias?PageSize=${PageSize}&PageNumber=${PageNumber}`);
         if (!res.ok) throw new Error('Error al cargar');
         const data = await res.json();
         materias = Array.isArray(data) ? data : (data.result ?? data.data ?? []);
@@ -97,6 +104,7 @@ async function guardarMateria() {
         if (!res.ok) throw new Error('Error en la respuesta');
         closeModal();
         mostrarToast(editandoId ? 'Materia actualizada' : 'Materia guardada', 'success');
+        PageNumber = 1;
         await cargarMaterias();
     } catch (e) {
         mostrarToast('Error al guardar la materia', 'error');

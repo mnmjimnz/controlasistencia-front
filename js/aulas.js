@@ -2,6 +2,8 @@
 // CONFIGURACIÓN DE LA API
 // ============================================
 const API_AULA = `https://controlasistenciaapi.onrender.com/api/Aula`;
+const PageSize = 5;
+var PageNumber = 1;
 // ============================================
 // ELEMENTOS DEL DOM
 // ============================================
@@ -55,18 +57,46 @@ let pendingDeleteCodigo = null;
 // }
 async function loadAulas() {
     try {
-        const res = await fetch(`${API_AULA}/ObtenerAulas`);
+        const res = await fetch(`${API_AULA}/ObtenerAulas?PageSize=${PageSize}&PageNumber=${PageNumber}`);
         if (!res.ok) throw new Error('Error al cargar');
         const data = await res.json();
         _aulas = Array.isArray(data) ? data : (data.result ?? data.data ?? []);
-        renderAulasTable(_aulas);
+        //renderAulasTable(_aulas);
+        renderCards(_aulas);
     } catch (e) {
-        document.getElementById('aulasTableBody').innerHTML =
+        document.getElementById('renderCards').innerHTML =
             `<tr><td colspan="3" class="empty-cell">⚠️ No se pudo conectar con la API.</td></tr>`;
         mostrarToast('Error al cargar materias', 'error');
     }
 }
 
+function renderCards(aulas) {
+    let container = document.getElementById("renderCards");
+    if (!aulas || aulas.length === 0) {
+        container.innerHTML = `📭 No hay aulas registradas`;
+        return;
+    }
+    container.innerHTML = aulas.map(m => `
+        <div class="card">
+        <div class="card-header"> Aula N° ${m.codigo}
+        </div>
+        <div class="card-footer">
+        <button class="btn-small" onclick="window.editAula(${m.id}, '${escapeHtml(m.codigo)}')">✏️ Editar</button>
+        <button class="btn-small" onclick="verHorariosDisponibles(${m.id})">Ver Horarios</button>
+        </div>
+        </div>
+        
+      `).join('');
+    document.getElementById('previousPage').disabled = PageNumber === 1;
+    document.getElementById('nextPage').disabled = aulas.length < PageSize;
+}
+function changePage(direction) {
+    PageNumber += direction;
+    loadAulas();
+}
+function verHorariosDisponibles(idHorario) {
+    location.href = `asistencia.html?idaula=${idHorario}`;
+}
 // Renderizar tabla
 function renderAulasTable(aulas) {
     let tableBody = document.getElementById('aulasTableBody');
@@ -114,6 +144,7 @@ async function saveAula() {
 
         mostrarToast(isEditing ? 'Aula actualizada' : 'Aula creada', 'success');
         closeModalAula();
+        PageNumber = 1;
         loadAulas();
 
     } catch (error) {
@@ -136,6 +167,7 @@ async function deleteAula() {
 
         mostrarToast('Aula eliminada', 'success');
         closeModalDelete();
+        PageNumber = 1;
         loadAulas();
 
     } catch (error) {
@@ -214,18 +246,28 @@ document.getElementById("btnNuevoAula").addEventListener('click', function () {
     resetForm();
 });
 
-document.getElementById("btnCancelarModal").addEventListener('click', closeModalAula);
-document.getElementById("btnConfirmarDelete").addEventListener('click', deleteAula);
-document.getElementById("btnCancelarDelete").addEventListener('click', closeModalDelete);
-
-// Cerrar modal al hacer clic fuera
-document.getElementById("modalAula").addEventListener('click', function () {
-    //if (e.target === document.getElementById("modalAula")) 
+document.getElementById("btnCancelarModal").addEventListener('click', function () {
     closeModalAula();
 });
-document.getElementById("modalDelete").addEventListener('click', function () {
-    //if (e.target === document.getElementById("modalDelete")) 
+document.getElementById("btnConfirmarDelete").addEventListener('click', function () {
+    deleteAula();
+});
+document.getElementById("btnCancelarDelete").addEventListener('click', function () {
     closeModalDelete();
+});
+
+document.getElementById("btnGuardarAula").addEventListener('click', function () {
+    saveAula();
+});
+
+// Cerrar modal al hacer clic fuera
+document.getElementById("modalAula").addEventListener('click', function (e) {
+    if (e.target === document.getElementById("modalAula"))
+        closeModalAula();
+});
+document.getElementById("modalDelete").addEventListener('click', function (e) {
+    if (e.target === document.getElementById("modalDelete"))
+        closeModalDelete();
 });
 
 // Inicializar
